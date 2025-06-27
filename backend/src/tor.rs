@@ -10,6 +10,7 @@ pub async fn create_tor_client() -> Result<TorClient<impl arti_client::Runtime>>
     // 2. Получаем runtime (асинхронное окружение)
     let runtime = Runtime::new()?;
 
+    
     // 3. Создаем Tor клиент
     let tor_client = TorClient::with_runtime(runtime)
         .config(config)
