@@ -1,0 +1,12 @@
+@"
+# Rust
+/target/
+**/*.rs.bk
+
+# IDE
+.idea/
+.vscode/
+
+# Конфигурация Tor
+**/tor_config/hidden_service/
+"@ > .gitignore
