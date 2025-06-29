@@ -1,11 +1,18 @@
-mod tor;
+use backend::{create_router, AppState};
+use std::sync::{Arc, RwLock};
+use std::net::SocketAddr;
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    println!("Starting anonymous marketplace backend...");
+async fn main() {
+    let state = AppState {
+        message: Arc::new(RwLock::new("Hello World".to_string())),
+    };
 
-    tor::start_hidden_service().await?;
+    let app = create_router(state);
 
-    println!("Service is ready");
-    Ok(())
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    axum::serve(
+        tokio::net::TcpListener::bind(addr).await.unwrap(),
+        app
+    ).await.unwrap();
 }
