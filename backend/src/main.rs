@@ -1,18 +1,19 @@
-use backend::{create_router, AppState};
-use std::sync::{Arc, RwLock};
+use axum::{Router, routing::get};
 use std::net::SocketAddr;
+use arti_client::TorClient;
+use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
-    let state = AppState {
-        message: Arc::new(RwLock::new("Hello World".to_string())),
-    };
+    // Запуск Tor-клиента
+    let tor_client = TorClient::create_bootstrapped().await.unwrap();
 
-    let app = create_router(state);
+    // Настройка Axum
+    let app = Router::new().route("/", get(|| async { "Hello, Tor!" }));
 
+    // Слушаем только localhost, Tor будет проксировать наружу
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    axum::serve(
-        tokio::net::TcpListener::bind(addr).await.unwrap(),
-        app
-    ).await.unwrap();
+    let listener = TcpListener::bind(addr).await.unwrap();
+
+    axum::serve(listener, app).await.unwrap();
 }
