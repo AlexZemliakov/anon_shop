@@ -7,3 +7,6 @@ edition = "2021"
 backend = { path = "../backend" }
 tokio = { version = "1.0", features = ["full"] }
 uuid = { version = "1.17.0", features = ["v4"] }
+
+# Для работы с датами
+chrono = "0.4"

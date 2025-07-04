@@ -2,6 +2,7 @@ use arti_client::{TorClient, TorClientConfig};
 use std::{error::Error, path::PathBuf};
 use tokio::fs;
 use log::{info, error};
+use tor_hsservice::{HsIdKeypair, OnionService};
 
 const KEY_FILE: &str = "onion_service_private.key";
 
@@ -43,7 +44,6 @@ pub async fn setup_hidden_service() -> Result<(TorClient, String), Box<dyn Error
 }
 
 async fn generate_key() -> Result<Vec<u8>, Box<dyn Error>> {
-    // Здесь должна быть реальная генерация ключа
-    // Временная заглушка:
-    Ok(b"fake-key-for-now".to_vec())
+    let keypair = HsIdKeypair::generate();
+    Ok(keypair.to_bytes().to_vec())
 }
