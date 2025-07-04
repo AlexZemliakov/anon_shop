@@ -1,19 +1,30 @@
+mod tor;
+mod api;
+mod database;
+
 use axum::{Router, routing::get};
-use std::net::SocketAddr;
-use arti_client::TorClient;
-use tokio::net::TcpListener;
+use log::info;
 
 #[tokio::main]
-async fn main() {
-    // Запуск Tor-клиента
-    let tor_client = TorClient::create_bootstrapped().await.unwrap();
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    env_logger::init();
 
-    // Настройка Axum
-    let app = Router::new().route("/", get(|| async { "Hello, Tor!" }));
+    // 1. Запуск Tor скрытого сервиса
+    let (_tor_client, onion_address) = tor::setup_hidden_service().await?;
+    info!("Main: Onion service running at {}", onion_address);
 
-    // Слушаем только localhost, Tor будет проксировать наружу
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    let listener = TcpListener::bind(addr).await.unwrap();
+    // 2. Инициализация базы данных
+    let db = database::init_db().await?;
 
-    axum::serve(listener, app).await.unwrap();
+    // 3. Настройка веб-сервера
+    let app = Router::new()
+        .merge(api::create_router())
+        .with_state(db);
+
+    info!("Starting web server on 127.0.0.1:8080");
+    axum::Server::bind(&"127.0.0.1:8080".parse()?)
+        .serve(app.into_make_service())
+        .await?;
+
+    Ok(())
 }

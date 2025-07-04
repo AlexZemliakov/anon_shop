@@ -1,17 +1,46 @@
-pub fn hello() -> String {
-    "Hello from admin panel!".to_string()
-}
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+use yew::prelude::*;
+use gloo_net::http::Request;
+
+#[derive(Clone, PartialEq, serde::Deserialize)]
+struct Item {
+    id: String,
+    name: String,
+    price: f64,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#[function_component(App)]
+fn app() -> Html {
+    let items = use_state(Vec::<Item>::new);
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    {
+        let items = items.clone();
+        use_effect_with_deps(move |_| {
+            wasm_bindgen_futures::spawn_local(async move {
+                let fetched_items: Vec<Item> = Request::get("/items")
+                    .send()
+                    .await
+                    .unwrap()
+                    .json()
+                    .await
+                    .unwrap();
+                items.set(fetched_items);
+            });
+            || ()
+        }, ());
+    }
+
+    html! {
+        <div class="shop">
+            <h1>{"Anon Shop"}</h1>
+            <div class="items">
+                {for items.iter().map(|item| html! {
+                    <div class="item">
+                        <h3>{&item.name}</h3>
+                        <p>{"Price: "}{item.price}</p>
+                        <button>{"Buy"}</button>
+                    </div>
+                })}
+            </div>
+        </div>
     }
 }

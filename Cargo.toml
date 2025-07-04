@@ -1,3 +1,9 @@
 [workspace]
-members = ["backend", "frontend", "admin_panel"]
+members = [
+    "backend",
+    "payments",
+    "admin_panel",
+    "frontend"
+]
+
 resolver = "2"

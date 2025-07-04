@@ -1,65 +1,52 @@
-use backend::repositories::ProductRepository;
-use uuid::Uuid;
+use axum::{
+    routing::{get, post},
+    Router, extract::State,
+    response::Html, Form
+};
+use sqlx::SqlitePool;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct NewItem {
+    name: String,
+    price: f64,
+    description: String,
+}
 
 #[tokio::main]
-async fn main() {
-    let repo = ProductRepository::new();
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let db = init_db().await?;
+    let app = Router::new()
+        .route("/", get(admin_dashboard))
+        .route("/add-item", post(add_item))
+        .route("/orders", get(view_orders))
+        .with_state(db);
 
-    loop {
-        println!("1. Добавить товар");
-        println!("2. Просмотреть товары");
-        println!("3. Выход");
-        
-
-        let mut choice = String::new();
-        std::io::stdin().read_line(&mut choice).unwrap();
-
-        match choice.trim() {
-            "1" => add_product(&repo),
-            "2" => list_products(&repo),
-            "3" => break,
-            _ => println!("Неверный выбор"),
-        }
-    }
+    axum::Server::bind(&"127.0.0.1:8081".parse()?)
+        .serve(app.into_make_service())
+        .await?;
+    Ok(())
 }
 
-fn add_product(repo: &ProductRepository) {
-    println!("Введите название товара:");
-    let mut name = String::new();
-    std::io::stdin().read_line(&mut name).unwrap();
-
-    println!("Введите цену:");
-    let mut price = String::new();
-    std::io::stdin().read_line(&mut price).unwrap();
-    let price: f64 = price.trim().parse().unwrap();
-
-    let product = backend::models::Product {
-        id: Uuid::new_v4(),
-        name: name.trim().to_string(),
-        price,
-        description: String::new(),
-        category: String::new(),
-        stock: 0,
-        image_url: String::new(),
-        is_hidden: false,
-        encrypted_details: String::new(),
-    };
-
-    match repo.add_product(product) {
-        Ok(_) => println!("Товар успешно добавлен!"),
-        Err(e) => println!("Ошибка: {}", e),
-    }
+async fn admin_dashboard(State(db): State<SqlitePool>) -> Html<String> {
+    Html(format!(r#"
+        <h1>Admin Panel</h1>
+        <form action="/add-item" method="post">
+            <input type="text" name="name" placeholder="Name">
+            <input type="number" step="0.01" name="price" placeholder="Price">
+            <textarea name="description"></textarea>
+            <button type="submit">Add Item</button>
+        </form>
+        <a href="/orders">View Orders</a>
+    "#))
 }
 
-fn list_products(repo: &ProductRepository) {
-    println!("Список товаров:");
-    match repo.list_products() {
-        Ok(products) => {
-            for product in products {
-                println!("- {}: {} руб. (ID: {})",
-                        product.name, product.price, product.id);
-            }
-        }
-        Err(e) => println!("Ошибка при получении списка товаров: {}", e),
-    }
+async fn add_item(State(db): State<SqlitePool>, Form(item): Form<NewItem>) {
+    sqlx::query!(
+        "INSERT INTO items (id, name, price, description) VALUES (?, ?, ?, ?)",
+        uuid::Uuid::new_v4().to_string(),
+        item.name,
+        item.price,
+        item.description
+    ).execute(&db).await.unwrap();
 }
