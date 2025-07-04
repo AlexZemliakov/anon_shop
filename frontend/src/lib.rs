@@ -1,7 +1,7 @@
 use yew::prelude::*;
 use gloo_net::http::Request;
-use wasm_bindgen::prelude::*;
 use serde::{Deserialize, Serialize};
+use web_sys::console;
 
 #[derive(Clone, PartialEq, Deserialize, Serialize)]
 pub struct Item {
@@ -15,36 +15,32 @@ pub fn app() -> Html {
     let items = use_state(Vec::<Item>::new);
     let error = use_state(|| None::<String>);
 
-    {
+    use_effect_with((), {
         let items = items.clone();
         let error = error.clone();
 
-        use_effect_with((), move |_| {
-            let items = items.clone();
-            let error = error.clone();
-
+        move |_| {
             wasm_bindgen_futures::spawn_local(async move {
                 match Request::get("/api/items").send().await {
-                    Ok(response) => {
-                        match response.json::<Vec<Item>>().await {
-                            Ok(fetched_items) => {
-                                items.set(fetched_items);
-                                error.set(None);
-                            },
-                            Err(e) => {
-                                error.set(Some(format!("Failed to parse items: {}", e)));
-                            }
+                    Ok(response) => match response.json::<Vec<Item>>().await {
+                        Ok(fetched_items) => {
+                            items.set(fetched_items);
+                            error.set(None);
+                        },
+                        Err(e) => {
+                            error.set(Some(format!("JSON error: {}", e)));
+                            console::error_1(&format!("JSON error: {}", e).into());
                         }
                     },
                     Err(e) => {
-                        error.set(Some(format!("Failed to fetch items: {}", e)));
+                        error.set(Some(format!("Network error: {}", e)));
+                        console::error_1(&format!("Network error: {}", e).into());
                     }
                 }
             });
-
             || ()
-        });
-    }
+        }
+    });
 
     html! {
         <div class="shop">
@@ -65,9 +61,4 @@ pub fn app() -> Html {
             </div>
         </div>
     }
-}
-
-#[wasm_bindgen(start)]
-pub fn run_app() {
-    yew::Renderer::<App>::new().render();
 }

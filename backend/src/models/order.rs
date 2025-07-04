@@ -1,6 +1,7 @@
+// order.rs
 use serde::{Serialize, Deserialize};
-use uuid::Uuid;
 use chrono::{DateTime, Utc};
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum OrderStatus {
@@ -8,7 +9,8 @@ pub enum OrderStatus {
     Completed,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+
+#[derive(Serialize, Deserialize)]
 pub struct Order {
     pub id: Uuid,
     pub product_id: Uuid,

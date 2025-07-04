@@ -3,17 +3,13 @@ name = "frontend"
 version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-name = "frontend"
-path = "src/main.rs"
-
 [lib]
-name = "frontend_lib"
-path = "src/lib.rs"
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]  # Только WASM-выход
 
 [dependencies]
 yew = { version = "0.21", features = ["csr"] }
-wasm-bindgen = "0.2.84"
+wasm-bindgen = "0.2.84"  # Явно добавляем
+wasm-bindgen-futures = "0.4.40"
 serde = { version = "1.0", features = ["derive"] }
 gloo-net = "0.6.0"
+web-sys = { version = "0.3", features = ["console"] }

@@ -7,24 +7,18 @@ edition = "2021"
 # Веб-фреймворк
 axum = "0.8.4"
 tokio = { version = "1.0", features = ["full"] }
-tower = "0.5.2"
 tower-http = { version = "0.6.6", features = ["full"] }
 
 # Tor интеграция
 arti-client = "0.31.0"
-tor-rtcompat = { version = "0.31.0", features = ["tokio"] }
-tor-config = "0.31.0"
 tor-hsservice = "0.31.0"
 # База данных
 sqlx = { version = "0.8.6", features = ["sqlite", "runtime-tokio-native-tls"] }
 
-# Шифрование
-aes-gcm = "0.10"
-ring = "0.17"
 
 # Сериализация
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde_json = "1.0.107"
 
 # Дополнительные утилиты
 anyhow = "1.0"
@@ -33,6 +27,8 @@ log = "0.4"
 env_logger = "0.11.8"
 
 # Добавляем для работы с UUID
-uuid = { version = "1.17.0", features = ["v4"] }
+uuid = { version = "1.7.0", features = ["v4", "serde"] }
 
-chrono = "0.4.41"
+
+
+chrono = { version = "0.4.41", features = ["serde"] }
