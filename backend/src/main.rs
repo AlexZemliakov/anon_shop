@@ -1,7 +1,8 @@
 mod tor;
 mod api;
 mod database;
-
+use axum::http::Method;
+use tower_http::cors::{CorsLayer, Any};
 use axum::{Router, routing::get};
 use log::info;
 
@@ -20,7 +21,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = Router::new()
         .merge(api::create_router())
         .with_state(db);
+    let cors = CorsLayer::new()
+        .allow_methods([Method::GET, Method::POST])
+        .allow_origin(Any);
 
+    let app = Router::new()
+        .merge(api::create_router())
+        .layer(cors)
+        .with_state(db);
     info!("Starting web server on 127.0.0.1:8080");
     axum::Server::bind(&"127.0.0.1:8080".parse()?)
         .serve(app.into_make_service())

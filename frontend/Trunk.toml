@@ -1,0 +1,8 @@
+[build]
+target = "index.html"
+dist = "dist"
+public_url = "/"
+
+[proxy]
+backend = "http://127.0.0.1:8080"  # Бекенд на Axum
+rewrite = "/api/"
