@@ -10,8 +10,9 @@ pub enum OrderStatus {
 }
 
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Order {
+    #[serde(with = "chrono::serde::ts_seconds_option")]
     pub id: Uuid,
     pub product_id: Uuid,
     pub created_at: DateTime<Utc>,

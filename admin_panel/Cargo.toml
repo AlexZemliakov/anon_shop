@@ -4,9 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-backend = { path = "../backend" }
-tokio = { version = "1.0", features = ["full"] }
-uuid = { version = "1.17.0", features = ["v4"] }
+backend.workspace = true
+tokio.workspace = true
+uuid.workspace = true
 
 # Для работы с датами
-chrono = "0.4"
+chrono.workspace = true

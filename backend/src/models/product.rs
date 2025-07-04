@@ -3,6 +3,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Product {
+    #[serde(with = "chrono::serde::ts_seconds_option")]
     pub id: Uuid,
     pub name: String,
     pub price: f64,

@@ -5,5 +5,29 @@ members = [
     "admin_panel",
     "frontend"
 ]
-
 resolver = "2"
+
+[workspace.dependencies]
+# Общие зависимости для всех крейтов
+axum = "0.7.5"
+tokio = { version = "1.37.0", features = ["full"] }
+serde = { version = "1.0.197", features = ["derive"] }
+chrono = { version = "0.4.38", features = ["serde"] }
+uuid = { version = "1.8.0", features = ["v4", "serde"] }
+thiserror = "1.0.58"
+log = "0.4.21"
+anyhow = "1.0.81"
+
+# Специфичные зависимости
+## Бекенд
+sqlx = { version = "0.7.3", features = ["sqlite", "runtime-tokio-native-tls"] }
+arti-client = "0.31.0"
+tower = "0.4.13"
+
+## Фронтенд
+yew = { version = "0.21.0", features = ["csr"] }
+wasm-bindgen = "0.2.92"
+gloo-net = "0.12.0"
+
+## Админ-панель
+askama = { version = "0.12.1", features = ["with-axum"] }
