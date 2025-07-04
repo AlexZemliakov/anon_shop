@@ -1,5 +1,7 @@
 pub mod models;
-pub mod repositories;
+pub mod repositories {
+    // Placeholder module code, you can implement the repository logic here
+}
 
 use axum::{
     Router,
