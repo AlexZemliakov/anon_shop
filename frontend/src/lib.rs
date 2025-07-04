@@ -1,7 +1,9 @@
 use yew::prelude::*;
 use gloo_net::http::Request;
+use wasm_bindgen::prelude::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, PartialEq, serde::Deserialize)]
+#[derive(Clone, PartialEq, Deserialize, Serialize)]
 pub struct Item {
     pub id: String,
     pub name: String,
@@ -11,27 +13,47 @@ pub struct Item {
 #[function_component(App)]
 pub fn app() -> Html {
     let items = use_state(Vec::<Item>::new);
+    let error = use_state(|| None::<String>);
 
     {
         let items = items.clone();
-        use_effect_with_deps(move |_| {
+        let error = error.clone();
+
+        use_effect_with((), move |_| {
+            let items = items.clone();
+            let error = error.clone();
+
             wasm_bindgen_futures::spawn_local(async move {
-                let fetched_items: Vec<Item> = Request::get("/api/items")
-                    .send()
-                    .await
-                    .unwrap()
-                    .json()
-                    .await
-                    .unwrap();
-                items.set(fetched_items);
+                match Request::get("/api/items").send().await {
+                    Ok(response) => {
+                        match response.json::<Vec<Item>>().await {
+                            Ok(fetched_items) => {
+                                items.set(fetched_items);
+                                error.set(None);
+                            },
+                            Err(e) => {
+                                error.set(Some(format!("Failed to parse items: {}", e)));
+                            }
+                        }
+                    },
+                    Err(e) => {
+                        error.set(Some(format!("Failed to fetch items: {}", e)));
+                    }
+                }
             });
+
             || ()
-        }, ());
+        });
     }
 
     html! {
         <div class="shop">
             <h1>{"Anon Shop"}</h1>
+            
+            if let Some(err) = &*error {
+                <div class="error">{err}</div>
+            }
+            
             <div class="items">
                 {for items.iter().map(|item| html! {
                     <div class="item" key={item.id.clone()}>

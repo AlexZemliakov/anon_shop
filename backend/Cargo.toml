@@ -33,4 +33,6 @@ log = "0.4"
 env_logger = "0.11.8"
 
 # Добавляем для работы с UUID
-uuid = { version = "1.0", features = ["v4"] }
+uuid = { version = "1.17.0", features = ["v4"] }
+
+chrono = "0.4.41"
