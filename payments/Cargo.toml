@@ -1,13 +1,10 @@
 [package]
-name = "payments"  # Должно быть "payments", а не "admin_panel"
+name = "payments"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-# Локальная зависимость (без workspace)
 backend = { path = "../backend" }
-
-# Workspace-зависимости
-axum = { workspace = true }
-tokio = { workspace = true }
-serde = { workspace = true }
+sqlx = { workspace = true, features = ["postgres"] }
+bitcoin = { workspace = true, features = ["std"] }  # Явно указываем features
+monero-rpc = { workspace = true }

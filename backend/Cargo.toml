@@ -1,13 +1,27 @@
 [package]
 name = "backend"
-version.workspace = true
-edition.workspace = true
+version = "0.1.0"
+edition = "2021"
 
 [dependencies]
-axum.workspace = true
-tokio.workspace = true
-serde.workspace = true
-sqlx.workspace = true
+# Workspace dependencies
 
-# Tor с минимальными фичами
-arti-client = { workspace = true, default-features = false, features = ["tokio"] }
+axum = { workspace = true }
+tokio = { workspace = true }
+
+chrono = { workspace = true }
+uuid = { workspace = true }
+bitcoin = { workspace = true }
+
+# Используем PostgreSQL вместо SQLite для избежания конфликтов
+sqlx = { workspace = true, features = ["postgres", "runtime-tokio-native-tls", "migrate"] }
+
+# Tor без sqlite
+arti-client = { workspace = true }
+
+# Добавляем PostgreSQL драйвер
+tokio-postgres = { version = "0.7.10", features = ["with-uuid-1"] }
+
+# Local dependencies
+payments = { path = "../payments" }
+

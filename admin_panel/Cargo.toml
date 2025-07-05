@@ -4,9 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-backend = { path = "../backend" }  # Локальный путь
-tokio.workspace = true
-uuid.workspace = true
-
-# Для работы с датами
-chrono.workspace = true
+backend = { path = "../backend" }
+sqlx = { workspace = true, features = ["postgres"] }
