@@ -4,12 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]  # Только WASM-выход
+crate-type = ["cdylib"]
 
 [dependencies]
-yew.workspace = true
-wasm-bindgen.workspace = true
-wasm-bindgen-futures.workspace = true
-serde.workspace = true
-gloo-net.workspace = true
-web-sys.workspace = true
+yew = { version = "0.21", features = ["csr"] }
+wasm-bindgen = "0.2.84"
+wasm-bindgen-futures = "0.4.40"
+gloo-net = "0.6.0"  # Используем последнюю стабильную версию
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+web-sys = { version = "0.3", features = ["console"] }

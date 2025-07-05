@@ -1,33 +1,18 @@
 [package]
 name = "backend"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
 
 [dependencies]
-# Веб-фреймворк
+# Workspace-зависимости
 axum.workspace = true
 tokio.workspace = true
-tower-http.workspace = true
-
-# Tor интеграция
-arti-client.workspace = true
-tor-hsservice.workspace = true
-# База данных
-sqlx.workspace = true
-
-# Сериализация
 serde.workspace = true
-serde_json.workspace = true
-
-# Дополнительные утилиты
-anyhow.workspace = true
-thiserror.workspace = true
-log.workspace = true
-env_logger.workspace = true
-
-# Добавляем для работы с UUID
+chrono.workspace = true
 uuid.workspace = true
 
+# SQLx с фичами (правильное форматирование)
+sqlx = { workspace = true, features = ["sqlite", "runtime-tokio-native-tls", "migrate"], default-features = false }
 
-
-chrono.workspace = true
+# Tor-зависимости (правильное форматирование)
+arti-client = { workspace = true, default-features = false, features = ["tokio", "static", "pt-client"] }

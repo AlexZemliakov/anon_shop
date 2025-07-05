@@ -1,17 +1,13 @@
 [package]
-name = "payments"
+name = "payments"  # Должно быть "payments", а не "admin_panel"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-# Заменяем на рабочую версию monero
-monero-rpc.workspace = true
+# Локальная зависимость (без workspace)
+backend = { path = "../backend" }
 
-# Bitcoin - используем последнюю стабильную
-bitcoin.workspace = true
-
-# Общие зависимости
-tokio.workspace = true
-serde.workspace = true
-thiserror.workspace = true
-hex.workspace = true
+# Workspace-зависимости
+axum = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }

@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use gloo_net::http::Request;
+use gloo_net::http::Request;  // Версия 0.6.0
 use serde::{Deserialize, Serialize};
 use web_sys::console;
 

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-backend.workspace = true
+backend = { path = "../backend" }  # Локальный путь
 tokio.workspace = true
 uuid.workspace = true
 
