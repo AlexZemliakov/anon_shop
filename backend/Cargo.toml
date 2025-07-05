@@ -4,15 +4,10 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-# Workspace-зависимости
 axum.workspace = true
 tokio.workspace = true
 serde.workspace = true
-chrono.workspace = true
-uuid.workspace = true
+sqlx.workspace = true
 
-# SQLx с фичами (правильное форматирование)
-sqlx = { workspace = true, features = ["sqlite", "runtime-tokio-native-tls", "migrate"], default-features = false }
-
-# Tor-зависимости (правильное форматирование)
-arti-client = { workspace = true, default-features = false, features = ["tokio", "static", "pt-client"] }
+# Tor с минимальными фичами
+arti-client = { workspace = true, default-features = false, features = ["tokio"] }

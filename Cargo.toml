@@ -1,10 +1,5 @@
 [workspace]
-members = [
-    "backend",
-    "payments",
-    "admin_panel",
-    "frontend"
-]
+members = ["backend", "payments", "admin_panel", "frontend"]
 resolver = "2"
 
 [workspace.package]
@@ -13,7 +8,7 @@ edition = "2021"
 rust-version = "1.70.0"
 
 [workspace.dependencies]
-# Общие утилиты
+# Базовые утилиты
 anyhow = "1.0.81"
 thiserror = "1.0.58"
 log = "0.4.21"
@@ -25,8 +20,8 @@ futures = "0.3.30"
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.114"
 
-# БД и ORM
-sqlx = { version = "0.7.3", features = ["sqlite", "runtime-tokio-native-tls", "migrate"] }
+# База данных (SQLx с форсированием версии)
+sqlx = { version = "0.7.3", features = ["sqlite", "runtime-tokio-native-tls", "migrate"], default-features = false }
 
 # Веб
 axum = "0.7.5"
@@ -34,14 +29,8 @@ tokio = { version = "1.37.0", features = ["full"] }
 tower = "0.4.13"
 tower-http = { version = "0.5.0", features = ["full"] }
 
-# Tor интеграция
-arti-client = { version = "0.31.0", default-features = false, features = [
-    "tokio",
-    "static",
-    "pt-client"  # Исправлено: pt-client вместо client
-] }
-tor-rtcompat = { version = "0.31.0", features = ["tokio"] }
-tor-config = "0.31.0"
+# Tor (минимальная конфигурация)
+arti-client = { version = "0.31.0", default-features = false, features = ["tokio"] }
 
 # Крипто
 aes-gcm = "0.10.3"
@@ -59,6 +48,3 @@ wasm-bindgen = "0.2.92"
 wasm-bindgen-futures = "0.4.40"
 gloo-net = "0.6.0"
 web-sys = { version = "0.3", features = ["console"] }
-
-[patch.crates-io]
-libsqlite3-sys = { version = "0.30.1" }  # Форсируем новую версию
