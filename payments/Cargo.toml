@@ -5,6 +5,10 @@ edition = "2021"
 
 [dependencies]
 backend = { path = "../backend" }
-sqlx = { workspace = true, features = ["postgres"] }
+sqlx = { version = "0.8.6", features = ["runtime-tokio-native-tls", "sqlite", "sqlcipher"] }
+rusqlite = { version = "0.36.0", features = ["bundled"] }
 bitcoin = { workspace = true, features = ["std"] }  # Явно указываем features
 monero-rpc = { workspace = true }
+
+[patch.crates-io]
+libsqlite3-sys = { version = "0.30.1" }
