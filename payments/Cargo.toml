@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 backend = { path = "../backend" }
-sqlx = { version = "0.8.6", features = ["runtime-tokio-native-tls", "sqlite", "sqlcipher"] }
+sqlx = { workspace = true, features = ["postgres"] }
 rusqlite = { version = "0.36.0", features = ["bundled"] }
 bitcoin = { workspace = true, features = ["std"] }  # Явно указываем features
 monero-rpc = { workspace = true }
